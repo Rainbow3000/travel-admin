@@ -1,0 +1,97 @@
+.category-container{
+    width: 100%;
+    height:calc(100vh - 45px);
+    position: relative;
+    .category-overlay{
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #3333332d;
+        position: absolute;
+        display: none;
+    }
+}
+
+#customers {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 30px;
+  }
+  
+  #customers td, #customers th {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  #customers tr:nth-child(even){background-color: #f2f2f2;}
+  
+  #customers tr:hover {background-color: #ddd;}
+  
+  #customers th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #101A32;
+    color: white;
+  }
+
+  .category-create-btn{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 180px;
+    height: 40px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: blue;
+    color: white;
+  }
+
+  .category-create-model{
+    position: absolute;
+    z-index: 100;
+    width: 550px;
+    background-color: #eee;
+    border-radius: 5px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    height: auto;
+    padding: 10px;
+    border: 1px solid gray;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    form{
+        display: flex;
+        width: 95%;
+        flex-direction: column;
+        input{
+            outline: none;
+            border: 1px solid rgba(128, 128, 128, 0.334);
+            height: 40px;
+            border-radius: 5px;
+            margin-top: 20px;
+            padding-left: 10px;
+            &:focus{
+                border: 1px solid blue;
+            }
+        }
+        button{
+            height: 40px;
+            margin-top: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: blue;
+            color: white;
+        }
+    }
+    
+  }
