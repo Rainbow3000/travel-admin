@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./priceTable.scss";
-import { publicRequest } from "../../requestMethod";
+import { publicRequest, userRequest } from "../../requestMethod";
 import axios from "axios";
 const PriceTable = () => {
   const [enableModelCreate, setEnableModelCreate] = useState(false);
@@ -24,7 +24,7 @@ const PriceTable = () => {
   const handleSubmitForm = async (e) => {
     e.preventDefault();
     try {
-     const response =  await axios.post("http://localhost:8080/api/v1/travel/price", {
+     const response =  await userRequest.post("/travel/price", {
         dateStart,
         typeTransport,
         place,
@@ -42,7 +42,7 @@ const PriceTable = () => {
 
   const getPriceTable = async()=>{
     try {
-      const response = await axios.get("http://localhost:8080/api/v1/travel/price")
+      const response = await userRequest.get("/travel/price")
       setPriceTable(response.data?.data); 
     } catch (error) {
       

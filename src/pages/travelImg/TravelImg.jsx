@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { publicRequest } from "../../requestMethod";
+import { publicRequest, userRequest } from "../../requestMethod";
 import axios from "axios";
 const TravelImg = () => {
   const [enableModelCreate, setEnableModelCreate] = useState(false);
@@ -25,7 +25,7 @@ const TravelImg = () => {
       formData.append("upload_preset", "my_travel");
       const url = process.env.REACT_APP_CLOUDINARY_URL;
       const { data } = await axios.post(url, formData);
-      const response = await axios.post("http://localhost:8080/api/v1/travelDetails/image", {
+      const response = await userRequest.post("/travelDetails/image", {
         image:data.url, 
         travelId
       });
@@ -38,7 +38,7 @@ const TravelImg = () => {
 
   const getTravelImages = async()=>{
     try {
-      const response = await axios.get(`http://localhost:8080/api/v1/travelDetails/image`); 
+      const response = await userRequest.get(`/travelDetails/image`); 
       setTravelImages(response.data?.data); 
     } catch (error) {
       
@@ -47,7 +47,7 @@ const TravelImg = () => {
 
   const handleDelete = async(id)=>{
     try {
-      await axios.delete(`http://localhost:8080/api/v1/travelDetails/image/${id}`);
+      await userRequest.delete(`/travelDetails/image/${id}`);
       getTravelImages(); 
     } catch (error) {
       

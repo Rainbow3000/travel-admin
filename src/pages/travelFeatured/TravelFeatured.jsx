@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./travelFeatured.scss";
-import { publicRequest } from "../../requestMethod";
+import { publicRequest, userRequest } from "../../requestMethod";
 import axios from "axios";
 const TravelFeatured = () => {
   const [enableModelCreate, setEnableModelCreate] = useState(false);
@@ -21,7 +21,7 @@ const TravelFeatured = () => {
   const handleSubmitForm = async (e) => {
     e.preventDefault();
     try {
-     const response =  await axios.post("http://localhost:8080/api/v1/travel/featured", {
+     const response =  await userRequest.post("/travel/featured", {
         featuredName,
         travelId
       });
@@ -34,7 +34,7 @@ const TravelFeatured = () => {
 
   const getFeatured = async()=>{
     try {
-      const response = await axios.get('http://localhost:8080/api/v1/travel/featured')
+      const response = await userRequest.get('/travel/featured')
       setFeatured(response.data?.data)
     } catch (error) {
       
@@ -44,7 +44,7 @@ const TravelFeatured = () => {
 
   const handleDelete = async(id)=>{
     try {
-      await axios.delete(`http://localhost:8080/api/v1/travel/featured/${id}`)
+      await userRequest.delete(`/travel/featured/${id}`)
       getFeatured(); 
     } catch (error) {
       
