@@ -1,11 +1,103 @@
-.home-container{
+.home-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: space-between;
+  .main {
+    width: 85%;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  h1 {
+    margin-left: 30px;
+  }
+  .dashboard-top {
+    display: flex;
     width: 100%;
-    height: 100vh;
-    display: flex;   
-    justify-content: space-between;
-    .main{
-        width: 85%;
+    height: auto;
+    justify-content: space-around;
+    margin-top: 30px;
+    .dashboard-featured {
+      width: 30%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 200px;
+      border-radius: 5px;
+      box-shadow: 1px 1px 21px 0px rgba(0, 0, 255, 0.75);
+      -webkit-box-shadow: 1px 1px 21px 0px rgba(0, 0, 255, 0.75);
+      -moz-box-shadow: 1px 1px 21px 0px rgba(0, 0, 255, 0.75);
+
+      div {
+        width: 100%;
         display: flex;
-        flex-direction: column;
+        justify-content: space-between;
+        padding: 0 30px;
+      }
+
+      span {
+        font-size: 20px;
+      }
+      b {
+        font-size: 30px;
+      }
     }
+  }
+
+  .dashboard-main {
+    width: 100%;
+    height: auto;
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    .dashboard-user-table {
+      width: 50%;
+      height: auto;
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+        .dashboard-btn {
+          box-shadow: inset 0px 1px 3px 0px #91b8b3;
+          background: linear-gradient(to bottom, #768d87 5%, #6c7c7c 100%);
+          background-color: #768d87;
+          border-radius: 5px;
+          border: 1px solid #566963;
+          margin-left: 10px;
+          display: inline-block;
+          cursor: pointer;
+          color: #ffffff;
+          font-family: Arial;
+          font-size: 15px;
+          font-weight: bold;
+          padding: 5px 5px;
+          text-decoration: none;
+          text-shadow: 0px -1px 0px #2b665e;
+        }
+      }
+
+      td,
+      th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+
+      tr:nth-child(even) {
+        background-color: #dddddd;
+      }
+    }
+   
+  }
+
+  .dashboard-charts{
+    width: 50%;
+    min-height: 550px;
+  }
 }

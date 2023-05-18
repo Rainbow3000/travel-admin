@@ -30,6 +30,12 @@ const PriceTable = () => {
         place,
         price,
         travelId
+      },{
+        headers: {
+          Authorization: `Bearer ${
+            JSON.parse(localStorage.getItem("user"))?.accessToken || null
+          }`,
+        },
       });
 
       setPriceTable(price=>[...price,response.data?.data]); 
@@ -42,7 +48,13 @@ const PriceTable = () => {
 
   const getPriceTable = async()=>{
     try {
-      const response = await userRequest.get("/travel/price")
+      const response = await userRequest.get("/travel/price",{
+        headers: {
+          Authorization: `Bearer ${
+            JSON.parse(localStorage.getItem("user"))?.accessToken || null
+          }`,
+        },
+      })
       setPriceTable(response.data?.data); 
     } catch (error) {
       
@@ -96,23 +108,23 @@ const PriceTable = () => {
             onChange={(e) => setTravelId(e.target.value)}
             placeholder="Travel id ..."
           />
-          <button type="submit">Create</button>
+          <button type="submit">Tạo</button>
         </form>
       </div>
 
       <div className="category-update-model"></div>
 
       <button className="category-create-btn" onClick={handleShowModelCreate}>
-        CREATE
+        THÊM
       </button>
-      <h1>PRICE TABLE</h1>
+      <h1>Bảng giá</h1>
       <table id="customers">
         <tr>
-          <th>Start Date</th>
-          <th>Transport Type</th>
-          <th>Place</th>
-          <th>Price</th>
-          <th style={{width:"20%"}}>Options</th>
+          <th>Ngày bắt đầu</th>
+          <th>Loại phương tiện</th>
+          <th>Địa điểm</th>
+          <th>Giá vé</th>
+          <th style={{width:"20%"}}>Thao tác</th>
         </tr>
 
         {priceTable && priceTable.map(item=>{
@@ -123,8 +135,8 @@ const PriceTable = () => {
               <td>{item.place}</td>
               <td>{item.price}</td>
               <td>
-                <button className="btn-update">Update</button>
-                <button className="btn-delete">Delete</button>
+                <button className="btn-update">Sửa</button>
+                <button className="btn-delete">Xóa</button>
               </td>
             </tr>
           )

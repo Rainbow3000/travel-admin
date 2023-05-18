@@ -24,6 +24,12 @@ const TravelFeatured = () => {
      const response =  await userRequest.post("/travel/featured", {
         featuredName,
         travelId
+      },{
+        headers: {
+          Authorization: `Bearer ${
+            JSON.parse(localStorage.getItem("user"))?.accessToken || null
+          }`,
+        },
       });
       setFeatured(featured=>[...featured,response.data?.data])
       setEnableModelCreate(false); 
@@ -34,7 +40,13 @@ const TravelFeatured = () => {
 
   const getFeatured = async()=>{
     try {
-      const response = await userRequest.get('/travel/featured')
+      const response = await userRequest.get('/travel/featured',{
+        headers: {
+          Authorization: `Bearer ${
+            JSON.parse(localStorage.getItem("user"))?.accessToken || null
+          }`,
+        },
+      })
       setFeatured(response.data?.data)
     } catch (error) {
       
@@ -44,7 +56,13 @@ const TravelFeatured = () => {
 
   const handleDelete = async(id)=>{
     try {
-      await userRequest.delete(`/travel/featured/${id}`)
+      await userRequest.delete(`/travel/featured/${id}`,{
+        headers: {
+          Authorization: `Bearer ${
+            JSON.parse(localStorage.getItem("user"))?.accessToken || null
+          }`,
+        },
+      })
       getFeatured(); 
     } catch (error) {
       
@@ -66,7 +84,7 @@ const TravelFeatured = () => {
         style={{ display: enableModelCreate === true && "flex" }}
         className="category-create-model"
       >
-        <h1>CREATE</h1>
+        <h1>TẠO</h1>
         <form action="#" onSubmit={handleSubmitForm}>
           <input
             type="text"
@@ -80,21 +98,21 @@ const TravelFeatured = () => {
             onChange={(e) => setTravelId(e.target.value)}
             placeholder="Travel id..."
           />
-          <button type="submit">Create</button>
+          <button type="submit">Tạo</button>
         </form>
       </div>
 
       <div className="category-update-model"></div>
 
       <button className="category-create-btn" onClick={handleShowModelCreate}>
-        CREATE
+        TẠO
       </button>
-      <h1>FEATURED</h1>
+      <h1>Nổi bật</h1>
       <table id="customers">
         <tr>
-          <th>Featured Name</th>
-          <th>Travel Id</th>
-          <th style={{width:"20%"}}>Options</th>
+          <th>Tên nổi bật</th>
+          <th>ID travel</th>
+          <th style={{width:"20%"}}>Thao tác</th>
         </tr>
 
         {
@@ -104,8 +122,8 @@ const TravelFeatured = () => {
                 <td>{item.featuredName}</td>
                 <td>{item.travelId}</td>
                 <td>
-                  <button className="btn-update">Update</button>
-                  <button className="btn-delete" onClick={()=>handleDelete(item.id)}>Delete</button>
+                  <button className="btn-update">Sửa</button>
+                  <button className="btn-delete" onClick={()=>handleDelete(item.id)}>Xóa</button>
                 </td>
               </tr>
 

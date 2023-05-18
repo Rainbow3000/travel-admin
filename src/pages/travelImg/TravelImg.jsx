@@ -28,6 +28,12 @@ const TravelImg = () => {
       const response = await userRequest.post("/travelDetails/image", {
         image:data.url, 
         travelId
+      },{
+        headers: {
+          Authorization: `Bearer ${
+            JSON.parse(localStorage.getItem("user"))?.accessToken || null
+          }`,
+        },
       });
       setTravelImages(travel=>[...travel,response.data?.data]); 
       setEnableModelCreate(false); 
@@ -38,7 +44,13 @@ const TravelImg = () => {
 
   const getTravelImages = async()=>{
     try {
-      const response = await userRequest.get(`/travelDetails/image`); 
+      const response = await userRequest.get(`/travelDetails/image`,{
+        headers: {
+          Authorization: `Bearer ${
+            JSON.parse(localStorage.getItem("user"))?.accessToken || null
+          }`,
+        },
+      }); 
       setTravelImages(response.data?.data); 
     } catch (error) {
       
@@ -47,7 +59,13 @@ const TravelImg = () => {
 
   const handleDelete = async(id)=>{
     try {
-      await userRequest.delete(`/travelDetails/image/${id}`);
+      await userRequest.delete(`/travelDetails/image/${id}`,{
+        headers: {
+          Authorization: `Bearer ${
+            JSON.parse(localStorage.getItem("user"))?.accessToken || null
+          }`,
+        },
+      });
       getTravelImages(); 
     } catch (error) {
       
@@ -70,7 +88,7 @@ const TravelImg = () => {
         style={{ display: enableModelCreate === true && "flex" }}
         className="category-create-model"
       >
-        <h1>CREATE</h1>
+        <h1>TẠO</h1>
         <form action="#" onSubmit={handleSubmitForm}>
           <input
             type="file"
@@ -83,21 +101,21 @@ const TravelImg = () => {
             onChange={(e) => setTravelId(e.target.value)}
             placeholder="Travel id ..."
           />
-          <button type="submit">Create</button>
+          <button type="submit">Tạo</button>
         </form>
       </div>
 
       <div className="category-update-model"></div>
 
       <button className="category-create-btn" onClick={handleShowModelCreate}>
-        CREATE
+        TẠO
       </button>
-      <h1>TRAVEL DETAILS IMAGE</h1>
+      <h1>Ảnh chi tiết travel</h1>
       <table id="customers">
         <tr>
-          <th>Image</th>
-          <th>Travel Id</th>
-          <th style={{width:"20%"}}>Options</th>
+          <th>Ảnh</th>
+          <th>ID Travel</th>
+          <th style={{width:"20%"}}>Thao tác</th>
         </tr>
         {
           travelImages && travelImages.map(item=>{
@@ -108,8 +126,8 @@ const TravelImg = () => {
                 </td>
                 <td>{item.travelId}</td>
                 <td>
-                  <button className="btn-update">Update</button>
-                  <button className="btn-delete" onClick={()=>handleDelete(item.id)}>Delete</button>
+                  <button className="btn-update">Sửa</button>
+                  <button className="btn-delete" onClick={()=>handleDelete(item.id)}>Xóa</button>
                 </td>
               </tr>
             )

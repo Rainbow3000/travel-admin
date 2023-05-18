@@ -8,9 +8,16 @@ import {MdOutlinePriceChange} from 'react-icons/md'
 import {AiOutlineSchedule,AiOutlineSetting} from 'react-icons/ai'
 import {BsCalendar2Date,BsCartCheck} from 'react-icons/bs'
 import {BiBookContent,BiCommentDetail} from 'react-icons/bi'
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 
 const Sidebar = () => {
+
+  const navigate = useNavigate(); 
+
+  const handleLogout = ()=>{
+    localStorage.removeItem('user'); 
+    navigate('/login'); 
+  }
   return (
     <div className='sidebar-container'>
         <div className='sidebar-logo'>
@@ -19,44 +26,44 @@ const Sidebar = () => {
         <div className='sidebar-content'>
           <ul>
             <Link className='link' to="/">
-              <li><AiOutlineHome/>Dashboard</li>
+              <li><AiOutlineHome/>&nbsp;&nbsp;&nbsp;Dashboard</li>
             </Link>
 
             <Link className='link' to="/category">
-                 <li><BiCategoryAlt/>Category</li>
+                 <li><BiCategoryAlt/>&nbsp;&nbsp;&nbsp;Category</li>
             </Link>
 
             <Link className='link' to="/travel">
-                 <li><SiYourtraveldottv/>Travel</li>
+                 <li><SiYourtraveldottv/>&nbsp;&nbsp;&nbsp;Travel</li>
             </Link>
 
             <Link className='link' to="/travel/details/image">
-                 <li><SiYourtraveldottv/>Travel Details Img</li>
+                 <li><SiYourtraveldottv/>&nbsp;&nbsp;&nbsp;Travel Details Img</li>
             </Link>
             <Link className='link' to="/travel/featured">
-                <li><MdOutlineFeaturedPlayList/>Travel Featured</li>
+                <li><MdOutlineFeaturedPlayList/>&nbsp;&nbsp;&nbsp;Travel Featured</li>
             </Link>
             <Link className='link' to="/travel/priceTable">
-               <li><MdOutlinePriceChange/>Travel Price Table</li>
+               <li><MdOutlinePriceChange/>&nbsp;&nbsp;&nbsp;Travel Price Table</li>
             </Link>
             <Link className='link' to="/travel/schedule">
-               <li><AiOutlineSchedule/>Travel Schedule</li>
+               <li><AiOutlineSchedule/>&nbsp;&nbsp;&nbsp;Travel Schedule</li>
             </Link>
             <Link className='link' to="/travel/schedule/date">
-              <li><BsCalendar2Date/>Travel Schedule Date</li>
+              <li><BsCalendar2Date/>&nbsp;&nbsp;&nbsp;Travel Schedule Date</li>
             </Link>
             <Link className='link' to="/travel/schedule/content">
-              <li><BiBookContent/>Travel Schedule Content</li>
+              <li><BiBookContent/>&nbsp;&nbsp;&nbsp;Travel Schedule Content</li>
             </Link>
             <Link className='link' to="/travel/order">
-             <li><BsCartCheck/>Order</li>
+             <li><BsCartCheck/>&nbsp;&nbsp;&nbsp;Order</li>
             </Link>
 
             <Link className='link' to="/travel/comments">
-                <li><BiCommentDetail/>Comments</li>
+                <li><BiCommentDetail/>&nbsp;&nbsp;&nbsp;Comments</li>
             </Link>
 
-            <li><AiOutlineSetting/>Settings</li>
+            <li onClick={handleLogout} ><AiOutlineSetting/>&nbsp;&nbsp;&nbsp;LOGOUT</li>
           </ul>
         </div>
     </div>
