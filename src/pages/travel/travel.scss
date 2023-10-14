@@ -39,16 +39,14 @@
 
   .category-create-btn{
     position: absolute;
-    right: 10px;
-    top: 10px;
-    width: 180px;
+    background-color: #009643;
+    color: #fff;
+    display: flex;
+    border-radius: 4px;
+    align-items: center;
+    width: 120px;
+    justify-content: center;
     height: 40px;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: blue;
-    color: white;
   }
 
   .category-create-model{
@@ -81,7 +79,7 @@
                 border: 1px solid blue;
             }
         }
-        button{
+        .btn-update{
             height: 40px;
             margin-top: 20px;
             cursor: pointer;
@@ -89,8 +87,15 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            background-color: blue;
             color: white;
+            background-color: #009643;
+            color: #fff;
+            display: flex;
+            border-radius: 4px;
+            align-items: center;
+            width: 120px;
+            justify-content: center;
+            height: 40px;
         }
     }
     

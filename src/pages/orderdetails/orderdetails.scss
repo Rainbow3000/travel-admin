@@ -8,7 +8,7 @@
 }
 
 .user-info {
-  width: 30%;
+  width: 50%;
   box-shadow: 1px 1px 21px 0px rgba(0, 0, 255, 0.75);
   -webkit-box-shadow: 1px 1px 21px 0px rgba(0, 0, 255, 0.75);
   -moz-box-shadow: 1px 1px 21px 0px rgba(0, 0, 255, 0.75);
@@ -24,8 +24,9 @@
 
 
 .export-excel-btn{
-  position: absolute;
-  bottom: -45px;
+  position: fixed;
+  top:50px;
+  right: 30px;
   width: 220px;
   height: 40px;
   border: none;
@@ -36,6 +37,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 10px;
 }
 
 .user-order-current{

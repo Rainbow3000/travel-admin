@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { publicRequest } from "../../requestMethod";
 import "./orderdetails.scss";
 import axios from "axios";
+import {SiMicrosoftexcel} from 'react-icons/si'
 import { useLocation } from "react-router-dom";
 const OrderDetails = () => {
   const [order, setOrder] = useState(null);
@@ -53,7 +54,7 @@ const OrderDetails = () => {
 
   const handleExportExcel = async () => {
     try {
-      await axios.post("http://localhost:5000/api/v1/exportToExcel", orderList);
+      await axios.post("http://localhost:5000/api/excel",orderList);
       alert("Xuất excel thành công !");
     } catch (error) {
       console.log(error);
@@ -69,7 +70,8 @@ const OrderDetails = () => {
 
   return (
     <div className="order-details-container">
-      <button className="export-excel-btn" onClick={handleExportExcel}>
+      <button style={{backgroundColor:'#009643'}} className="export-excel-btn" onClick={handleExportExcel}>
+        <SiMicrosoftexcel style={{marginRight:10}}/>
         Xuất Excel
       </button>
       <div className="user-info">

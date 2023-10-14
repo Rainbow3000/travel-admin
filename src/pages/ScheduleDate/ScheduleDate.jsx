@@ -2,15 +2,37 @@ import React, { useEffect, useState } from "react";
 import "./scheduleDate.scss";
 import { publicRequest } from "../../requestMethod";
 import axios from "axios";
+import {AiOutlineDelete} from 'react-icons/ai'
+import {MdSystemUpdateAlt} from 'react-icons/md'
+import {BsPencilSquare} from'react-icons/bs'
 const ScheduleDate = () => {
   const [enableModelCreate, setEnableModelCreate] = useState(false);
 
   const [sessionDateName, setSessionDateName] = useState("");
   const [travelScheduleId,setTravelScheduleId] = useState(null); 
   const [scheduleDate,setScheduleDate] = useState([]); 
+  const [schedules,setSchedules] = useState([]);
+
+
   const handleShowModelCreate = () => {
     setEnableModelCreate(true);
   };
+
+  const getSchedule = async()=>{
+    try {
+      const response = await axios.get("http://localhost:8080/api/v1/travel/schedule",{
+        headers: {
+          Authorization: `Bearer ${
+            JSON.parse(localStorage.getItem("user"))?.accessToken || null
+          }`,
+        },
+      }); 
+      setSchedules(response.data?.data); 
+    } catch (error) {
+      
+    }
+  }
+
 
   const handleCloseForm = () => {
     setEnableModelCreate(false);
@@ -66,8 +88,13 @@ const ScheduleDate = () => {
     }
   }
 
+  const handleScheduleChange = (scheduleId)=>{
+      setTravelScheduleId(scheduleId); 
+  }
+
   useEffect(()=>{
-    getScheduleDate(); 
+    getScheduleDate();
+    getSchedule(); 
   },[])
 
   return (
@@ -89,22 +116,28 @@ const ScheduleDate = () => {
             onChange={(e) => setSessionDateName(e.target.value)}
             placeholder="Session date name..."
           />
-           <input
-            type="number"
-            value={travelScheduleId}
-            onChange={(e) => setTravelScheduleId(e.target.value)}
-            placeholder="Travel Schedule id ..."
-          />
-          <button type="submit">Tạo</button>
+               <select onChange={(e)=>handleScheduleChange(e.target.value)} style={{paddingLeft:5,marginTop:20,height:40,outline:'none',border:'1px solid rgba(128, 128, 128, 0.334)',borderRadius:5}}>
+        
+        <option disabled selected value="">ID Ngày</option>
+        {
+          schedules?.map(item=> {
+             return (
+              <option value={ parseInt(item.id)}>{item.id}</option>
+             )
+          })
+        }
+      </select>
+         <button style={{backgroundColor:'#009643',display:'flex',alignItems:'center',justifyContent:'center'}} type="submit"><BsPencilSquare/>Tạo</button>
         </form>
       </div>
 
       <div className="category-update-model"></div>
 
       <button className="category-create-btn" onClick={handleShowModelCreate}>
-        THÊM
+      <BsPencilSquare style={{marginRight:10}}/>
+         THÊM MỚI
       </button>
-      <h1>Lịch trình buổi trong ngày</h1>
+      <h1 style={{height:40}}></h1>
       <table id="customers">
         <tr>
           <th>Buổi trong ngày</th>
@@ -117,8 +150,8 @@ const ScheduleDate = () => {
           <td>{item.sessionDateName}</td>
           <td>{item.travelScheduleId}</td>
           <td>
-            <button className="btn-update">Sửa</button>
-                <button className="btn-delete" onClick={()=>handleDelete(item.id)}>Xóa</button>
+                 <MdSystemUpdateAlt size={20}/>
+                 <AiOutlineDelete size={20} style={{marginLeft:10}} onClick={() => handleDelete(item.id)}/>
           </td>
         </tr>
           )

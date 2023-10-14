@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import "./travelFeatured.scss";
 import { publicRequest, userRequest } from "../../requestMethod";
 import axios from "axios";
+import {AiOutlineDelete} from 'react-icons/ai'
+import {MdSystemUpdateAlt} from 'react-icons/md'
+import {BsPencilSquare} from 'react-icons/bs'
 const TravelFeatured = () => {
   const [enableModelCreate, setEnableModelCreate] = useState(false);
 
@@ -98,16 +101,17 @@ const TravelFeatured = () => {
             onChange={(e) => setTravelId(e.target.value)}
             placeholder="Travel id..."
           />
-          <button type="submit">Tạo</button>
+        <button style={{backgroundColor:'#009643',display:'flex',alignItems:'center',justifyContent:'center'}} type="submit"><BsPencilSquare/>Tạo</button>
         </form>
       </div>
 
       <div className="category-update-model"></div>
 
       <button className="category-create-btn" onClick={handleShowModelCreate}>
-        TẠO
+      <BsPencilSquare style={{marginRight:10}}/>
+         THÊM MỚI
       </button>
-      <h1>Nổi bật</h1>
+      <h1 style={{height:40}}></h1>
       <table id="customers">
         <tr>
           <th>Tên nổi bật</th>
@@ -122,8 +126,8 @@ const TravelFeatured = () => {
                 <td>{item.featuredName}</td>
                 <td>{item.travelId}</td>
                 <td>
-                  <button className="btn-update">Sửa</button>
-                  <button className="btn-delete" onClick={()=>handleDelete(item.id)}>Xóa</button>
+                 <MdSystemUpdateAlt size={20}/>
+                 <AiOutlineDelete size={20} style={{marginLeft:10}} onClick={() => handleDelete(item.id)}/>
                 </td>
               </tr>
 

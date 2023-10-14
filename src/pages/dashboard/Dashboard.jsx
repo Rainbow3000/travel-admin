@@ -135,7 +135,7 @@ const Dashboard = () => {
   let orderCountLast = 0;
   orderList &&
     orderList.forEach((item) => {
-      const month = item.createdDate.split("-")[1].slice(1);
+      const month = item.createdDate?.split("-")[1];
       if (parseInt(month) === parseInt(date.getMonth() + 1)) {
         orderCountCurrent++;
       }
@@ -242,7 +242,7 @@ const Dashboard = () => {
 
   orderListDetails &&
     orderListDetails.forEach((item) => {
-      const month = item.createdDate.split("-")[1].slice(1);
+      const month = item.createdDate?.split("-")[1];
       if (parseInt(month) === parseInt(date.getMonth() + 1)) {
         totalPriceCurrentMonth += item.totalPrice;
       }
@@ -253,7 +253,7 @@ const Dashboard = () => {
 
   userList &&
     userList.forEach((item) => {
-      const month = item.createdDate.split("-")[1].slice(1);
+      const month = item.createdDate?.split("-")[1];
       if (parseInt(month) === parseInt(date.getMonth() + 1)) {
         countUserRegsCurrentMonth++;
       }
@@ -360,19 +360,23 @@ const Dashboard = () => {
     });
 
   const handleDeleteUser = async (userId) => {
-    await axios.delete(`http://localhost:8080/api/v1/user/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${
-          JSON.parse(localStorage.getItem("user"))?.accessToken || null
-        }`,
-      },
-    });
-    getUserList();
+
+    if(window.confirm('Bạn có chắc muốn xóa người dùng này ?') === true){
+      await axios.delete(`http://localhost:8080/api/v1/user/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${
+            JSON.parse(localStorage.getItem("user"))?.accessToken || null
+          }`,
+        },
+      });
+      getUserList();
+    }
+
   };
 
   return (
     <div className="dashboard">
-      <h1>Dashboard</h1>
+      <h1 style={{height:40}}></h1>
       <div className="dashboard-top">
         <div className="dashboard-featured">
           <div>
@@ -466,7 +470,7 @@ const Dashboard = () => {
                 return (
                   <tr>
                     <td>{item.username}</td>
-                    <td>{item.createdDate.split("T")[0]}</td>
+                    <td>{item.createdDate?.split('T')[0].split('-').reverse().join(' / ')}</td>
                     <td>
                       {item.status === 1 ? (
                         <span style={{ color: "green" }}>Đang hoạt động</span>

@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
 import "./category.scss";
 import axios from "axios";
+import storage from '../../firebase/index'; 
+import {ref as refStorage,uploadBytes, deleteObject , getDownloadURL} from 'firebase/storage'
+import { v4 as uuidv4 } from 'uuid';
+import {AiOutlineDelete} from 'react-icons/ai'
+import {MdSystemUpdateAlt} from 'react-icons/md'
+import {BsPencilSquare} from 'react-icons/bs'
 const Category = () => {
   const [enableModelCreate, setEnableModelCreate] = useState(false);
   const [enableModelUpdate, setEnableModelUpdate] = useState(false);
   const [categoryName, setCategoryName] = useState("");
   const [categoryStatus, setCategoryStatus] = useState(null);
-  const [files, setFiles] = useState("");
   const [idUpdate, setIdUpdate] = useState(null);
   const [categorys, setCategorys] = useState([]);
-
+  const [url,setUrl] = useState(""); 
   const handleShowModelCreate = () => {
     setEnableModelCreate(true);
   };
@@ -27,20 +32,12 @@ const Category = () => {
 
   const handleSubmitForm = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-
-    for (const file of files) {
-      formData.append("file", file);
-    }
-    try {
-      formData.append("upload_preset", "my_travel");
-      const url = process.env.REACT_APP_CLOUDINARY_URL;
-      const { data } = await axios.post(url, formData);
+    try { 
       const response = await axios.post(
         "http://localhost:8080/api/v1/category",
         {
           categoryName,
-          categoryImg: data.url,
+          categoryImg:url,
           categoryStatus,
         },
         {
@@ -51,33 +48,26 @@ const Category = () => {
           },
         }
       );
+      setEnableModelCreate(false);
+      setUrl("");
       setCategorys((category) => [...category, response.data?.data]);
       setCategoryName("");
       setCategoryStatus("");
-      setFiles("");
       setEnableModelUpdate(false);
+      
     } catch (error) {
       console.log(error);
     }
   };
 
   const handleSubmitFormUpdate = async (e) => {
-    console.log("updating...");
     e.preventDefault();
-    const formData = new FormData();
-
-    for (const file of files) {
-      formData.append("file", file);
-    }
     try {
-      formData.append("upload_preset", "my_travel");
-      const url = process.env.REACT_APP_CLOUDINARY_URL;
-      const { data } = await axios.post(url, formData);
       await axios.put(
         `http://localhost:8080/api/v1/category/${idUpdate}`,
         {
           categoryName,
-          categoryImg: data.url,
+          categoryImg: url,
           categoryStatus,
         },
         {
@@ -88,11 +78,12 @@ const Category = () => {
           },
         }
       );
-      setFiles("");
+      handleCloseForm(); 
       setCategoryName("");
       setCategoryStatus("");
       setEnableModelUpdate(false);
       getCategory();
+  
     } catch (error) {
       console.log(error);
     }
@@ -122,6 +113,19 @@ const Category = () => {
     } catch (error) {}
   };
 
+  const onFileChange = (files)=>{
+    const file = files[0];
+    console.log(file);
+    const fileName =`images/${uuidv4()}-${file?.name}`; 
+    const storageRef = refStorage(storage,fileName); 
+    uploadBytes(storageRef,file).then((snapshot)=>{
+        getDownloadURL(refStorage(storage,fileName)).then(downloadUrl => {
+            console.log(downloadUrl);
+            setUrl(downloadUrl); 
+        })
+    })
+  }
+
   useEffect(() => {
     getCategory();
   }, []);
@@ -137,7 +141,7 @@ const Category = () => {
         style={{ display: enableModelCreate === true && "flex" }}
         className="category-create-model"
       >
-        <h1>TẠO</h1>
+         <h1 style={{height:40}}></h1>
         <form action="#" onSubmit={handleSubmitForm}>
           <input
             type="text"
@@ -147,7 +151,7 @@ const Category = () => {
           />
           <input
             type="file"
-            onChange={(e) => setFiles(e.target.files)}
+            onChange={(e) => onFileChange(e.target.files)}
             placeholder="Category image"
           />
           <input
@@ -156,7 +160,7 @@ const Category = () => {
             onChange={(e) => setCategoryStatus(e.target.value)}
             placeholder="Category status(0 or 1)"
           />
-          <button type="submit">Tạo</button>
+         <button style={{backgroundColor:'#009643',display:'flex',alignItems:'center',justifyContent:'center'}} type="submit"><BsPencilSquare/>Tạo</button>
         </form>
       </div>
 
@@ -174,7 +178,7 @@ const Category = () => {
           />
           <input
             type="file"
-            onChange={(e) => setFiles(e.target.files)}
+            onChange={(e) => onFileChange(e.target.files)}
             placeholder="Category image"
           />
           <input
@@ -188,9 +192,10 @@ const Category = () => {
       </div>
 
       <button className="category-create-btn" onClick={handleShowModelCreate}>
-        THÊM
+      <BsPencilSquare style={{marginRight:10}}/>
+         THÊM MỚI
       </button>
-      <h1>Danh mục</h1>
+      <h1 style={{height:40}}></h1>
       <table id="customers">
         <tr>
           <th>Tên danh mục</th>
@@ -208,18 +213,9 @@ const Category = () => {
                 </td>
                 <td>{item.categoryStatus}</td>
                 <td>
-                  <button
-                    className="btn-update"
-                    onClick={() => handleShowModelUpdate(item.id)}
-                  >
-                    Sửa
-                  </button>
-                  <button
-                    className="btn-delete"
-                    onClick={() => handleDelete(item.id)}
-                  >
-                    Xóa
-                  </button>
+                 <MdSystemUpdateAlt size={20} onClick={() => handleShowModelUpdate(item.id)}/>
+                 <AiOutlineDelete size={20} style={{marginLeft:10}} onClick={() => handleDelete(item.id)}/>
+                 
                 </td>
               </tr>
             );

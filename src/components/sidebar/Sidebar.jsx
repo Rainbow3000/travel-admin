@@ -30,40 +30,37 @@ const Sidebar = () => {
             </Link>
 
             <Link className='link' to="/category">
-                 <li><BiCategoryAlt/>&nbsp;&nbsp;&nbsp;Category</li>
+                 <li><BiCategoryAlt/>&nbsp;&nbsp;&nbsp;Danh Mục</li>
             </Link>
 
             <Link className='link' to="/travel">
-                 <li><SiYourtraveldottv/>&nbsp;&nbsp;&nbsp;Travel</li>
+                 <li><SiYourtraveldottv/>&nbsp;&nbsp;&nbsp;Bài Viết</li>
             </Link>
 
             <Link className='link' to="/travel/details/image">
-                 <li><SiYourtraveldottv/>&nbsp;&nbsp;&nbsp;Travel Details Img</li>
+                 <li><SiYourtraveldottv/>&nbsp;&nbsp;&nbsp;Ảnh Chi Tiết</li>
             </Link>
             <Link className='link' to="/travel/featured">
-                <li><MdOutlineFeaturedPlayList/>&nbsp;&nbsp;&nbsp;Travel Featured</li>
+                <li><MdOutlineFeaturedPlayList/>&nbsp;&nbsp;&nbsp;Mục Nổi Bật</li>
             </Link>
             <Link className='link' to="/travel/priceTable">
-               <li><MdOutlinePriceChange/>&nbsp;&nbsp;&nbsp;Travel Price Table</li>
+               <li><MdOutlinePriceChange/>&nbsp;&nbsp;&nbsp;Bảng Giá</li>
             </Link>
             <Link className='link' to="/travel/schedule">
-               <li><AiOutlineSchedule/>&nbsp;&nbsp;&nbsp;Travel Schedule</li>
+               <li><AiOutlineSchedule/>&nbsp;&nbsp;&nbsp;Lịch Trình</li>
             </Link>
             <Link className='link' to="/travel/schedule/date">
-              <li><BsCalendar2Date/>&nbsp;&nbsp;&nbsp;Travel Schedule Date</li>
-            </Link>
-            <Link className='link' to="/travel/schedule/content">
-              <li><BiBookContent/>&nbsp;&nbsp;&nbsp;Travel Schedule Content</li>
+              <li><BsCalendar2Date/>&nbsp;&nbsp;&nbsp;Lịch Trình Ngày</li>
             </Link>
             <Link className='link' to="/travel/order">
-             <li><BsCartCheck/>&nbsp;&nbsp;&nbsp;Order</li>
+             <li><BsCartCheck/>&nbsp;&nbsp;&nbsp;Đơn Đặt Lịch</li>
             </Link>
 
             <Link className='link' to="/travel/comments">
-                <li><BiCommentDetail/>&nbsp;&nbsp;&nbsp;Comments</li>
+                <li><BiCommentDetail/>&nbsp;&nbsp;&nbsp;Bình Luận</li>
             </Link>
 
-            <li onClick={handleLogout} ><AiOutlineSetting/>&nbsp;&nbsp;&nbsp;LOGOUT</li>
+            <li onClick={handleLogout} ><AiOutlineSetting/>&nbsp;&nbsp;&nbsp;Đăng Xuất</li>
           </ul>
         </div>
     </div>

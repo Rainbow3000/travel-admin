@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { publicRequest, userRequest } from "../../requestMethod";
+import storage from '../../firebase/index'; 
+import {ref as refStorage,uploadBytes, deleteObject , getDownloadURL} from 'firebase/storage'
+import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
+import {AiOutlineDelete} from 'react-icons/ai'
+import {MdSystemUpdateAlt} from 'react-icons/md'
+import {BsPencilSquare} from 'react-icons/bs'
 const TravelImg = () => {
   const [enableModelCreate, setEnableModelCreate] = useState(false);
   const [travelId,setTravelId] = useState(null); 
-  const [travelImages,setTravelImages] = useState([]); 
-  const [files,setFiles] = useState(null); 
+  const [travelImages,setTravelImages] = useState([]);  
+  const [url,setUrl] = useState([]);  
   const handleShowModelCreate = () => {
     setEnableModelCreate(true);
   };
@@ -16,17 +22,9 @@ const TravelImg = () => {
 
   const handleSubmitForm = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-
-    for (const file of files) {
-      formData.append("file", file);
-    }
     try {
-      formData.append("upload_preset", "my_travel");
-      const url = process.env.REACT_APP_CLOUDINARY_URL;
-      const { data } = await axios.post(url, formData);
       const response = await userRequest.post("/travelDetails/image", {
-        image:data.url, 
+        image:url, 
         travelId
       },{
         headers: {
@@ -72,6 +70,17 @@ const TravelImg = () => {
     }
   }
 
+  const onFileChange = (files)=>{
+    const file = files[0];
+    const fileName =`images/${uuidv4()}-${file?.name}`; 
+    const storageRef = refStorage(storage,fileName); 
+    uploadBytes(storageRef,file).then((snapshot)=>{
+        getDownloadURL(refStorage(storage,fileName)).then(downloadUrl => {
+            setUrl(downloadUrl); 
+        })
+    })
+  }
+
 
   useEffect(()=>{
     getTravelImages(); 
@@ -92,7 +101,7 @@ const TravelImg = () => {
         <form action="#" onSubmit={handleSubmitForm}>
           <input
             type="file"
-            onChange={(e) => setFiles(e.target.files)}
+            onChange={(e) => onFileChange(e.target.files)}
             placeholder="files..."
           />
            <input
@@ -101,16 +110,17 @@ const TravelImg = () => {
             onChange={(e) => setTravelId(e.target.value)}
             placeholder="Travel id ..."
           />
-          <button type="submit">Tạo</button>
+        <button style={{backgroundColor:'#009643',display:'flex',alignItems:'center',justifyContent:'center'}} type="submit"><BsPencilSquare/>Tạo</button>
         </form>
       </div>
 
       <div className="category-update-model"></div>
 
       <button className="category-create-btn" onClick={handleShowModelCreate}>
-        TẠO
+      <BsPencilSquare style={{marginRight:10}}/>
+         THÊM MỚI
       </button>
-      <h1>Ảnh chi tiết travel</h1>
+      <h1 style={{height:40}}></h1>
       <table id="customers">
         <tr>
           <th>Ảnh</th>
@@ -126,8 +136,8 @@ const TravelImg = () => {
                 </td>
                 <td>{item.travelId}</td>
                 <td>
-                  <button className="btn-update">Sửa</button>
-                  <button className="btn-delete" onClick={()=>handleDelete(item.id)}>Xóa</button>
+                  <MdSystemUpdateAlt size={20}/>
+                  <AiOutlineDelete size={20} style={{marginLeft:10}} onClick={() => handleDelete(item.id)}/>
                 </td>
               </tr>
             )

@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./travel.scss";
-
+import storage from '../../firebase/index'; 
+import {ref as refStorage,uploadBytes, deleteObject , getDownloadURL} from 'firebase/storage'
+import { v4 as uuidv4 } from 'uuid';
+import {AiOutlineDelete} from 'react-icons/ai'
+import {MdSystemUpdateAlt} from 'react-icons/md'
+import {BsPencilSquare} from 'react-icons/bs'
 const Travel = () => {
   const [enableModelCreate, setEnableModelCreate] = useState(false);
 
@@ -15,8 +20,24 @@ const Travel = () => {
   const [enableModelUpdate, setEnableModelUpdate] = useState(false);
   const [idUpdate, setIdUpdate] = useState(null);
   const [categoryId, setCategoryId] = useState("");
-  const [files, setFiles] = useState("");
   const [travels, setTravels] = useState([]);
+  const [categorys,setCategorys] = useState([]);
+  const [url,setUrl] = useState(""); 
+
+  const [travel,setTravel] = useState({}); 
+
+
+  const getCategory = async () => {
+    const response = await axios.get("http://localhost:8080/api/v1/category", {
+      headers: {
+        Authorization: `Bearer ${
+          JSON.parse(localStorage.getItem("user"))?.accessToken || null
+        }`,
+      },
+    });
+    setCategorys(response.data?.data);
+  };
+
 
   const handleShowModelCreate = () => {
     setEnableModelCreate(true);
@@ -27,22 +48,39 @@ const Travel = () => {
     setEnableModelUpdate(false);
   };
 
-  const handleShowModelUpdate = (categoryId) => {
+  const handleShowModelUpdate = (travelId) => {
+    const travel = travels.find(item => item.id === travelId); 
+    setTravelName (travel.travelName)
+    setTravelDescription(travel.travelDescription);
+    setTravelPriceNew(travel.travelPriceNew);
+    setTravelPriceOld(travel.travelPriceOld);
+    setTravelAddress(travel.travelAddress); 
+    setCategoryId(travel.categoryId);
     setEnableModelUpdate(true);
-    setIdUpdate(categoryId);
+    setTravelStatus(travel.travelStatus);
+    setTravelDateNumber(travel.travelDateNumber);
+  
+    setIdUpdate(travelId);
   };
+
+  const handleCategoryChange = (categoryId)=>{
+    setCategoryId(categoryId); 
+  }
+
+  const onFileChange = (files)=>{
+    const file = files[0];
+    const fileName =`images/${uuidv4()}-${file?.name}`; 
+    const storageRef = refStorage(storage,fileName); 
+    uploadBytes(storageRef,file).then((snapshot)=>{
+        getDownloadURL(refStorage(storage,fileName)).then(downloadUrl => {
+            setUrl(downloadUrl); 
+        })
+    })
+  }
 
   const handleSubmitForm = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-
-    for (const file of files) {
-      formData.append("file", file);
-    }
     try {
-      formData.append("upload_preset", "my_travel");
-      const url = process.env.REACT_APP_CLOUDINARY_URL;
-      const { data } = await axios.post(url, formData);
       const response = await axios.post(
         "http://localhost:8080/api/v1/travel",
         {
@@ -54,7 +92,7 @@ const Travel = () => {
           travelStatus,
           travelDateNumber,
           categoryId,
-          travelImg: data.url,
+          travelImg: url,
         },
         {
           headers: {
@@ -70,11 +108,12 @@ const Travel = () => {
       setTravelAddress("");
       setTravelPriceNew("");
       setTravelPriceOld("");
-      setFiles("");
+      setUrl(""); 
       setTravelDescription("");
       setTravelStatus("");
       setTravelDateNumber("");
       setEnableModelCreate(false);
+      alert('Tạo tin thành công !');
     } catch (error) {
       console.log(error);
     }
@@ -82,15 +121,7 @@ const Travel = () => {
 
   const handleSubmitFormUpdate = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-
-    for (const file of files) {
-      formData.append("file", file);
-    }
     try {
-      formData.append("upload_preset", "my_travel");
-      const url = process.env.REACT_APP_CLOUDINARY_URL;
-      const { data } = await axios.post(url, formData);
       const response = await axios.put(
         `http://localhost:8080/api/v1/travel/${idUpdate}`,
         {
@@ -102,7 +133,7 @@ const Travel = () => {
           travelStatus,
           travelDateNumber,
           categoryId,
-          travelImg: data.url,
+          travelImg: url,
         },
         {
           headers: {
@@ -118,12 +149,13 @@ const Travel = () => {
       setTravelAddress("");
       setTravelPriceNew("");
       setTravelPriceOld("");
-      setFiles("");
+      setUrl("");
       setTravelDescription("");
       setTravelStatus("");
       setTravelDateNumber("");
       setEnableModelUpdate(false);
       getTravels(); 
+      alert('Cập nhật tin thành công !');
     } catch (error) {
       console.log(error);
     }
@@ -145,19 +177,26 @@ const Travel = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:8080/api/v1/travel/${id}`, {
-        headers: {
-          Authorization: `Bearer ${
-            JSON.parse(localStorage.getItem("user"))?.accessToken || null
-          }`,
-        },
-      });
-      getTravels();
+
+
+      if(window.confirm('Bạn có chắc muốn xóa bản tin này không ?') === true){  
+        await axios.delete(`http://localhost:8080/api/v1/travel/${id}`, {
+          headers: {
+            Authorization: `Bearer ${
+              JSON.parse(localStorage.getItem("user"))?.accessToken || null
+            }`,
+          },
+        });
+        getTravels();
+      }
+
+
     } catch (error) {}
   };
 
   useEffect(() => {
     getTravels();
+    getCategory(); 
   }, []);
 
   return (
@@ -177,24 +216,24 @@ const Travel = () => {
             type="text"
             value={travelName}
             onChange={(e) => setTravelName(e.target.value)}
-            placeholder="Travel name ..."
+            placeholder="Tên ..."
           />
           <input
             type="file"
-            onChange={(e) => setFiles(e.target.files)}
-            placeholder="Travel image..."
+            onChange={(e) =>  onFileChange(e.target.files)}
+            placeholder="Ảnh..."
           />
           <input
             type="text"
             value={travelDescription}
-            placeholder="Travel description..."
+            placeholder="Mô tả..."
             onChange={(e) => setTravelDescription(e.target.value)}
           />
           <input
             type="number"
             value={travelPriceNew}
             onChange={(e) => setTravelPriceNew(e.target.value)}
-            placeholder="Travel price new... "
+            placeholder="Giá... "
           />
           <input
             type="number"
@@ -202,34 +241,39 @@ const Travel = () => {
             onChange={(e) => setTravelPriceOld(e.target.value)}
             name=""
             id=""
-            placeholder="Travel price old..."
+            placeholder="Giá cũ..."
           />
           <input
             type="text"
             value={travelAddress}
             onChange={(e) => setTravelAddress(e.target.value)}
-            placeholder="Travel address..."
+            placeholder="Địa chỉ..."
           />
           <input
             type="text"
             value={travelDateNumber}
             onChange={(e) => setTravelDateNumber(e.target.value)}
-            placeholder="Travel date number ..."
+            placeholder="Số ngày ..."
           />
-          <input
-            type="number"
-            value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
-            placeholder="Category id..."
-          />
+          <select onChange={(e)=>handleCategoryChange(e.target.value)} style={{paddingLeft:5,marginTop:20,height:40,outline:'none',border:'1px solid rgba(128, 128, 128, 0.334)',borderRadius:5}}>
+        
+            <option disabled selected value="">Chọn danh mục</option>
+            {
+              categorys?.map(item=> {
+                 return (
+                  <option value={ parseInt(item.id)}>{item.id}</option>
+                 )
+              })
+            }
+          </select>
           <input
             type="number"
             value={travelStatus}
             onChange={(e) => setTravelStatus(e.target.value)}
-            placeholder="Travel status(0 or 1)..."
+            placeholder="Trạng thái (0 hoặc 1)"
           />
 
-          <button type="submit">Tạo</button>
+          <button style={{backgroundColor:'#009643',display:'flex',alignItems:'center',justifyContent:'center'}} type="submit"><BsPencilSquare/>Tạo</button>
         </form>
       </div>
 
@@ -247,7 +291,7 @@ const Travel = () => {
           />
           <input
             type="file"
-            onChange={(e) => setFiles(e.target.files)}
+            onChange={(e) => onFileChange(e.target.files)}
             placeholder="Travel image..."
           />
           <input
@@ -282,12 +326,17 @@ const Travel = () => {
             onChange={(e) => setTravelDateNumber(e.target.value)}
             placeholder="Travel date number ..."
           />
-          <input
-            type="number"
-            value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
-            placeholder="Category id..."
-          />
+            <select value={categoryId} onChange={(e)=>handleCategoryChange(e.target.value)} style={{ paddingLeft:5, marginTop:20,height:40,outline:'none',border:'1px solid rgba(128, 128, 128, 0.334)',borderRadius:5}}>
+        
+        <option disabled selected value="">Chọn danh mục</option>
+          {
+            categorys?.map(item=> {
+              return (
+                <option value={ parseInt(item.id)}>{item.id}</option>
+              )
+            })
+          }
+      </select>
           <input
             type="number"
             value={travelStatus}
@@ -295,16 +344,17 @@ const Travel = () => {
             placeholder="Travel status(0 or 1)..."
           />
 
-          <button type="submit">Cập nhật</button>
+          <button style={{backgroundColor:'#009643',display:'flex',alignItems:'center',justifyContent:'center'}} type="submit">Cập nhật</button>
         </form>
       </div>
 
       <div className="category-update-model"></div>
 
-      <button className="category-create-btn" onClick={handleShowModelCreate}>
-        THÊM
+      <button  className="category-create-btn" onClick={handleShowModelCreate}>
+        <BsPencilSquare style={{marginRight:10}}/>
+         THÊM MỚI
       </button>
-      <h1>Travel</h1>
+      <h1 style={{height:40}}></h1>
       <table id="customers">
         <tr>
           <th>Tên Travel</th>
@@ -332,19 +382,10 @@ const Travel = () => {
                 <td>{item.travelAddress}</td>
                 <td>{item.travelDateNumber}</td>
                 <td>{item.travelStatus}</td>
-                <td>
-                  <button
-                    className="btn-update"
-                    onClick={() => handleShowModelUpdate(item.id)}
-                  >
-                    Sửa
-                  </button>
-                  <button
-                    className="btn-delete"
-                    onClick={() => handleDelete(item.id)}
-                  >
-                    Xóa
-                  </button>
+                <td style={{width:'10%'}}>
+
+                 <MdSystemUpdateAlt className="icon" size={20} onClick={() => handleShowModelUpdate(item.id)}/>
+                 <AiOutlineDelete className="icon" size={20} style={{marginLeft:10}} onClick={() => handleDelete(item.id)}/>
                 </td>
               </tr>
             );

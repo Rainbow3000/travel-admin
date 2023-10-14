@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import "./comment.scss";
 import { publicRequest } from "../../requestMethod";
 import axios from "axios";
+import {BsPencilSquare} from'react-icons/bs'
+import {AiOutlineDelete} from 'react-icons/ai'
+import {MdSystemUpdateAlt} from 'react-icons/md'
 const Comment = () => {
   const [enableModelCreate, setEnableModelCreate] = useState(false);
 
@@ -118,16 +121,17 @@ const Comment = () => {
             onChange={(e) => setCommentDate(e.target.value)}
             placeholder="Comment date ..."
           />
-          <button type="submit">Tạo</button>
+          <button style={{backgroundColor:'#009643',display:'flex',alignItems:'center',justifyContent:'center'}} type="submit"><BsPencilSquare/>Tạo</button>
         </form>
       </div>
 
       <div className="category-update-model"></div>
 
       <button className="category-create-btn" onClick={handleShowModelCreate}>
-        TẠO
+      <BsPencilSquare style={{marginRight:10}}/>
+         THÊM MỚI
       </button>
-      <h1>Bình luận</h1>
+      <h1 style={{height:40}}></h1>
       <table id="customers">
         <tr>
           <th>ID người dùng</th>
@@ -146,15 +150,10 @@ const Comment = () => {
                 <td>{item.userCommentName}</td>
                 <td>{item.travelId}</td>
                 <td>{item.content}</td>
-                <td>{item.commentDate}</td>
+                <td>{item.commentDate.split('-').reverse().join(' / ')}</td>
                 <td>
-                  <button className="btn-update">Sửa</button>
-                  <button
-                    className="btn-delete"
-                    onClick={() => handleDelete(item.id)}
-                  >
-                    Xóa
-                  </button>
+                <MdSystemUpdateAlt size={20}/>
+                 <AiOutlineDelete size={20} style={{marginLeft:10}} onClick={() => handleDelete(item.id)}/>
                 </td>
               </tr>
             );

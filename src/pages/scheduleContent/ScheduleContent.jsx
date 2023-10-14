@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./scheduleContent.scss";
 import { publicRequest } from "../../requestMethod";
+import {BsPencilSquare} from'react-icons/bs'
 import axios from "axios";
 const ScheduleContent = () => {
   const [enableModelCreate, setEnableModelCreate] = useState(false);
@@ -97,16 +98,17 @@ const ScheduleContent = () => {
             onChange={(e) => setScheduleDateId(e.target.value)}
             placeholder="Schedule date id ..."
           />
-          <button type="submit">Tạo</button>
+        <button style={{backgroundColor:'#009643',display:'flex',alignItems:'center',justifyContent:'center'}} type="submit"><BsPencilSquare/>Tạo</button>
         </form>
       </div>
 
       <div className="category-update-model"></div>
 
       <button className="category-create-btn" onClick={handleShowModelCreate}>
-        THÊM
+      <BsPencilSquare style={{marginRight:10}}/>
+         THÊM MỚI
       </button>
-      <h1>Nội dung lịch trình</h1>
+      <h1 style={{height:40}}></h1>
       <table id="customers">
         <tr>
           <th>Nội dung</th>
